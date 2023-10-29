@@ -1,5 +1,42 @@
 {
-  "rewrites": [
-    {"source": "/(.*)", "destination": "http://94.228.165.52/$1"}
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.js"
+    }
   ]
 }
+
+// api/index.js
+const http = require('http');
+const https = require('https');
+const { parse } = require('url');
+
+module.exports = (req, res) => {
+  const { pathname, query } = parse(req.url, true);
+  const options = {
+    hostname: 'your-v2ray-server.com',
+    port: 443,
+    path: pathname,
+    method: req.method,
+    headers: req.headers
+  };
+
+  const proxy = https.request(options, function (targetRes) {
+    res.writeHead(targetRes.statusCode, targetRes.headers);
+    targetRes.pipe(res, {
+      end: true
+    });
+  });
+
+  req.pipe(proxy, {
+    end: true
+  });
+};
