@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    {"source": "/(.*)", "destination": "http://194.26.229.195/$1", "websocket": true}
+    {"source": "/(.*)", "destination": "http://194.26.229.195:21610/$1"}
   ]
 }
